@@ -1,13 +1,13 @@
-- name: example_global_value
+- name: eventLog_global_value
   path: $
   labels:
-    environment: beta # static label
+    environment: edge # static label
 
-- name: example_value
+- name: eventLog_info
   type: object
   path: $[*]?(@.severity == "info")
   labels:
-    environment: beta   # static label
+    environment: edge   # static label
     id: $.record_id      # dynamic label
     source_type: $.source_type # dynamic value
     event_code: $.event_code
@@ -16,11 +16,37 @@
     info: 1             # static value
     timestamp: $.timestamp
 
-- name: example_error
+- name: eventLog_warning
+  type: object
+  path: $[*]?(@.severity == "warning")
+  labels:
+    environment: edge   # static label
+    id: $.record_id      # dynamic label
+    source_type: $.source_type # dynamic value
+    event_code: $.event_code
+    message: $.message
+  values:
+    info: 1             # static value
+    timestamp: $.timestamp
+
+- name: eventLog_error
   type: object
   path: $[*]?(@.severity == "error")
   labels:
-    environment: beta   # static label
+    environment: edge   # static label
+    id: $.record_id      # dynamic label
+    source_type: $.source_type # dynamic value
+    event_code: $.event_code
+    message: $.message
+  values:
+    info: 1             # static value
+    timestamp: $.timestamp
+
+- name: eventLog_fatal
+  type: object
+  path: $[*]?(@.severity == "fatal")
+  labels:
+    environment: edge   # static label
     id: $.record_id      # dynamic label
     source_type: $.source_type # dynamic value
     event_code: $.event_code
