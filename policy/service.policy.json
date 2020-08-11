@@ -1,0 +1,11 @@
+{
+  "properties": [
+    {
+      "name": "purpose",
+      "value": "monitoring"
+    }
+  ],
+  "constraints": [
+    "openhorizon.arch == amd64"
+  ]
+}
