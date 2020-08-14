@@ -7,7 +7,7 @@
   type: object
   path: $[*]?(@.severity == "info")
   labels:
-    environment: edge   # static label
+    environment: edge_development   # static label
     id: $.record_id      # dynamic label
     source_type: $.source_type # dynamic value
     event_code: $.event_code
@@ -20,7 +20,7 @@
   type: object
   path: $[*]?(@.severity == "warning")
   labels:
-    environment: edge   # static label
+    environment: edge_development   # static label
     id: $.record_id      # dynamic label
     source_type: $.source_type # dynamic value
     event_code: $.event_code
@@ -33,7 +33,7 @@
   type: object
   path: $[*]?(@.severity == "error")
   labels:
-    environment: edge   # static label
+    environment: edge_development   # static label
     id: $.record_id      # dynamic label
     source_type: $.source_type # dynamic value
     event_code: $.event_code
@@ -46,7 +46,7 @@
   type: object
   path: $[*]?(@.severity == "fatal")
   labels:
-    environment: edge   # static label
+    environment: edge_development   # static label
     id: $.record_id      # dynamic label
     source_type: $.source_type # dynamic value
     event_code: $.event_code
