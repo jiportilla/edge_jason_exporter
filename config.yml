@@ -1,9 +1,9 @@
 - name: eventLog_global_value
   path: $
   labels:
-    environment: edge # static label
+    environment: edge_development # static label
 
-- name: eventLog_info
+- name: EventLog    #Prometheus adds _info
   type: object
   path: $[*]?(@.severity == "info")
   labels:
@@ -16,7 +16,7 @@
     info: 1             # static value
     timestamp: $.timestamp
 
-- name: eventLog_warning
+- name: EventLog_warning
   type: object
   path: $[*]?(@.severity == "warning")
   labels:
@@ -29,7 +29,7 @@
     info: 1             # static value
     timestamp: $.timestamp
 
-- name: eventLog_error
+- name: EventLog_error
   type: object
   path: $[*]?(@.severity == "error")
   labels:
@@ -42,7 +42,7 @@
     info: 1             # static value
     timestamp: $.timestamp
 
-- name: eventLog_fatal
+- name: EventLog_fatal
   type: object
   path: $[*]?(@.severity == "fatal")
   labels:
