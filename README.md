@@ -1,19 +1,20 @@
 # Edge JSON Exporter
 Edge Node JSON Exporter
 
-This is a simple example of using and creating a Horizon edge service.
+This is a simple example of using and creating a JSON Exporter service.
 
-- [Preconditions for Using the Hello World Example Edge Service](#preconditions)
-- [Using the Hello World Example Edge Service with Deployment Pattern](#using-helloworld-pattern)
-- [Using the Hello World Example Edge Service with Deployment Policy](PolicyRegister.md)
-- [Creating Your Own Hello World Edge Service](CreateService.md)
+- [Preconditions for Using the JSON Exporter Service](#preconditions)
+- [Using the JSON Exporter Service with Deployment Policy](PolicyRegister.md)
+- [Creating Your Own Prometheus-operator monitoring solution](CreateService.md)
 - Further Learning - to see more Horizon features demonstrated, continue on to the [cpu2evtstreams example](../../evtstreams/cpu2evtstreams).
 
-## <a id=preconditions></a> Preconditions for Using the Hello World Example Edge Service
+## <a id=preconditions></a> Preconditions for Using the JSON Exporter Service
 
-If you haven't done so already, you must do these steps before proceeding with the helloworld example:
+If you have not done so already, you must do these steps before proceeding with the JSON Exporter service:
 
 1. Install the Horizon management infrastructure (exchange and agbot).
+
+	*Also see [one-click Management Hub installation example](https://github.com/open-horizon/devops/blob/master/mgmt-hub/README.md)
 
 2. Install the Horizon agent on your edge device and configure it to point to your Horizon exchange.
 
@@ -45,12 +46,12 @@ hzn exchange node confirm
 hzn unregister -f
 ```
 
-## <a id=using-helloworld-pattern></a> Using the Hello World Example Edge Service with Deployment Pattern
+## <a id=using-helloworld-pattern></a> Using the JSON Exporter Service with Deployment Pattern
 
 1. Register your edge node with Horizon to use the helloworld pattern:
 
 ```bash
-hzn register -p IBM/pattern-ibm.helloworld -s ibm.helloworld --serviceorg IBM
+hzn register
 ```
  - **Note**: using the `-s` flag with the `hzn register` command will cause Horizon to wait until agreements are formed and the service is running on your edge node to exit, or alert you of any errors encountered during the registration process.
 
@@ -63,7 +64,7 @@ sudo docker ps
 3. See the helloworld service output:
 
 ``` bash
-hzn service log -f ibm.helloworld
+curl localhost:7979/eventlog
 ```
  - **Note**: Press **Ctrl C** to stop the command output.
 
