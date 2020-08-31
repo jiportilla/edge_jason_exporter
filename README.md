@@ -46,22 +46,39 @@ hzn exchange node confirm
 hzn unregister -f
 ```
 
-## <a id=using-helloworld-pattern></a> Using the JSON Exporter Service with Deployment Pattern
+## <a id=using-helloworld-pattern></a> Using the JSON Exporter Service with Deployment Policy
 
-1. Register your edge node with Horizon to use the helloworld pattern:
+1. Register your edge node with Horizon to use the JSON exporter edge service:
+
+( --------- **verify** device registration cmd with policy.json)
 
 ```bash
-hzn register
+hzn register -policy f horizon/node.policy.json
 ```
  - **Note**: using the `-s` flag with the `hzn register` command will cause Horizon to wait until agreements are formed and the service is running on your edge node to exit, or alert you of any errors encountered during the registration process.
+
+ 
+ Publish json service with horizon/service.definition.json
+ 
+ 
+ Publish deployment policy with *constraint*
+ 
+ ```
+ "constraints": [
+      "state == configured"
+    ],
+ ```
 
 2. After the agreement is made, list the docker container edge service that has been started as a result:
 
 ``` bash
 sudo docker ps
+
+CONTAINER ID        IMAGE                       COMMAND                  CREATED             STATUS              PORTS                  NAMES
+fdf7d0260303        iportilla/jexporter_amd64   "/bin/json_exporter …"   13 days ago         Up 3 minutes                               8060a586134d59c1e4e53d5eac1142475b46bd4a3e1afa675da6689ae0f8749d-json.exporter
 ```
 
-3. See the helloworld service output:
+3. See the Monitoring service output:
 
 ``` bash
 curl localhost:7979/eventlog
@@ -73,3 +90,5 @@ curl localhost:7979/eventlog
 ```bash
 hzn unregister -f
 ```
+
+![Alert Example ](prometheus-operator/alertExample.png)
