@@ -48,6 +48,8 @@ hzn unregister -f
 
 ## <a id=using-helloworld-pattern></a> Using the JSON Exporter Service with Deployment Policy
 
+![Edge Prometheus Operator ](prometheus-operator/Edge-Prometheus-operator.png)
+
 1. Register your edge node with Horizon to use the JSON exporter edge service:
 
 ( --------- **verify** device registration cmd with policy.json)
