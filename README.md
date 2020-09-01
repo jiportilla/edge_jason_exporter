@@ -8,6 +8,60 @@ This is a simple example of using and creating a JSON Exporter service.
 - [Creating Your Own Prometheus-operator monitoring solution](CreateService.md)
 - Further Learning - to see more Horizon features demonstrated, continue on to the [cpu2evtstreams example](../../evtstreams/cpu2evtstreams).
 
+Additionally content will includes:
+
+1. What is anax Event log API, what type of information is available on the Edge nodes
+2. How can you expose Event Log information as Prometheus metrics using the JSON exporter
+3. Configure rules in Prometheus to trigger alerts to AlertManager
+4. Use AlertManager to send notifications to Edge administrators
+
+## EventLog Rest API
+Anax provides an Event Log rest API,
+
+For example, List the event logs for the current or all registrations with:
+
+`hzn eventlog list`
+
+
+Source code avaialble at:
+[EventLog API](https://github.com/open-horizon/anax/blob/master/cli/eventlog/eventlog.go)
+
+```
+ {
+    "record_id": "10",
+    "timestamp": "2020-09-09 12:37:21 -0700 PDT",
+    "severity": "error",
+    "message": "Error starting containers: API error (500): driver failed programming external connectivity on endpoint 7996f592634d22c5583f74b0404cc77fd69969879fa5ec321e0cf2c70ef38043-acme-motion-detection-service-gpu (b3623ba8977d822fc4b0d47614e6cabb07b4f7d9b7004e5829aaa6440bb248d7): Bind for 0.0.0.0:9080 failed: port is already allocated",
+    "event_code": "error_start_container",
+    "source_type": "agreement",
+    "event_source": {
+      "agreement_id": "7996f592634d22c5583f74b0404cc77fd69969879fa5ec321e0cf2c70ef38043",
+      "workload_to_run": {
+        "url": "acme-motion-detection-service-gpu",
+        "org": "ipcluster",
+        "version": "1.0.0",
+        "arch": "amd64"
+      },
+      "dependent_services": [],
+      "consumer_id": "IBM/ipcluster-agbot",
+      "agreement_protocol": "Basic"
+    }
+  }
+```
+
+## Prometheus Architecture
+
+The Prometheus ecosystem consists of multiple components, many of which are optional.
+
+###Architecture
+
+This diagram illustrates the architecture of Prometheus and some of its ecosystem components:
+
+![Prometheus architecture ](prometheus-operator/prometheus-architecture.png)
+
+
+[architecture](https://prometheus.io/docs/introduction/overview/)
+
 ## <a id=preconditions></a> Preconditions for Using the JSON Exporter Service
 
 If you have not done so already, you must do these steps before proceeding with the JSON Exporter service:
