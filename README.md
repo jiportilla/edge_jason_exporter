@@ -107,9 +107,85 @@ hzn exchange node confirm
 hzn unregister -f
 ```
 
-## <a id=using-helloworld-pattern></a> Using the JSON Exporter Service with Deployment Policy
+## <a id=using-JSON-exporter></a> Using the JSON Exporter Service with Deployment Policy
 
 ![Edge Prometheus Operator ](prometheus-operator/Edge-Prometheus-operator.png)
+
+The Prometheus Operator for Kubernetes provides easy monitoring definitions for Kubernetes services and deployment and management of Prometheus instances.
+
+This have been tested on a X84-64 Kubernetes cluster.
+
+This repository collects Kubernetes manifests, Grafana dashboards, and Prometheus rules combined with documentation and scripts to provide easy to operate end-to-end Kubernetes cluster monitoring with Prometheus using the Prometheus Operator. The container images support AMD64, ARM64, ARM and PPC64le architectures.
+
+The content of this project is written in jsonnet and is an extension of the fantastic kube-prometheus project.
+
+
+Components included in this package:
+
+The Prometheus Operator
+Highly available Prometheus
+Highly available Alertmanager
+Prometheus node-exporter
+kube-state-metrics
+CoreDNS
+Grafana
+SMTP relay to Gmail for Grafana notifications (optional)
+
+[Cluster Monitoring](https://github.com/carlosedp/cluster-monitoring)
+
+## Quickstart for K3S
+To deploy the monitoring stack on your K3s cluster, there are four parameters that need to be configured in the vars.jsonnet file:
+
+1. Set k3s.enabled to true.
+2. Change your K3s master node IP(your VM or host IP) on k3s.master_ip parameter.
+3. Edit suffixDomain to have your node IP with the .nip.io suffix or your cluster URL. This will be your ingress URL suffix.
+4. Set traefikExporter enabled parameter to true to collect Traefik metrics and deploy dashboard.
+After changing these values to deploy the stack, run:
+
+```
+$ make vendor
+$ make
+$ make deploy
+
+# Or manually:
+
+$ make vendor
+$ make
+$ kubectl apply -f manifests/setup/
+$ kubectl apply -f manifests/
+```
+
+### Ingress
+Now you can open the applications:
+
+To list the created ingresses, run kubectl get ingress --all-namespaces, if you added your cluster IP or URL suffix in vars.jsonnet before rebuilding the manifests, the applications will be exposed on:
+
+- Grafana on https://grafana.[your_node_ip].nip.io,
+- Prometheus on https://prometheus.[your_node_ip].nip.io
+- Alertmanager on https://alertmanager.[your_node_ip].nip.io
+
+### Pre-reqs
+
+The project requires json-bundler and the jsonnet compiler. The Makefile does the heavy-lifting of installing them. You need Go already installed:
+
+```
+git clone https://github.com/carlosedp/cluster-monitoring
+cd cluster-monitoring
+make vendor
+# Change the jsonnet files...
+make
+
+```
+After this, a new customized set of manifests is built into the manifests dir. To apply to your cluster, run:
+
+`make deploy`
+
+To uninstall run:
+
+`make teardown`
+
+
+## Edge Node registration
 
 1. Register your edge node with Horizon to use the JSON exporter edge service:
 
