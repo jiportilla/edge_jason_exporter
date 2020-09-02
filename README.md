@@ -15,7 +15,7 @@ Additionally content will includes:
 3. Configure rules in Prometheus to trigger alerts to AlertManager
 4. Use AlertManager to send notifications to Edge administrators
 
-## EventLog Rest API
+## 1. Edge Node EventLog Rest API
 Anax provides an Event Log rest API,
 
 For example, List the event logs for the current or all registrations with:
@@ -23,8 +23,10 @@ For example, List the event logs for the current or all registrations with:
 `hzn eventlog list`
 
 
-Source code avaialble at:
+Event Log API source code is avaialble at:
 [EventLog API](https://github.com/open-horizon/anax/blob/master/cli/eventlog/eventlog.go)
+
+Here is an example of the information provided with `hzn eventlog list -l` command:
 
 ```
  {
@@ -48,12 +50,17 @@ Source code avaialble at:
     }
   }
 ```
+Notice the `severity` and `message` content in the resulting JSON. This information will exported to Prometheus.
 
-## Prometheus Architecture
+## 2. Exporting Edge Node Event Log data to Prometheus
+
+The Prometheus development community has created a JSON Exporter to scrape remote JSON data by JSONPath. Source code is available on [Github](https://github.com/prometheus-community/json_exporter)
+
+## 3. Configure rules in Prometheus to trigger alerts to AlertManager
 
 The Prometheus ecosystem consists of multiple components, many of which are optional.
 
-###Architecture
+### Architecture
 
 This diagram illustrates the architecture of Prometheus and some of its ecosystem components:
 
@@ -146,5 +153,84 @@ curl localhost:7979/eventlog
 ```bash
 hzn unregister -f
 ```
+## Error Examples
+
+Description of problem:
+
+**Bind for 0.0.0.0:9080 failed: port is already allocated**
+
+How reproducible:
+After Edge Registration.
+
+Actual Results:
+The container fails to start.
+
+Expected Results:
+Container starts.
+
+Additional info:
+
+Tail of /var/log/upstart/docker.log (after restarting Docker):
+
+Resolution:
+Another docker container was still running in the background from a different project.
+
+This can be fixed by running:
+
+```
+docker stop $(docker ps -a -q)
+docker rm $(docker ps -a -q)
+```
+
+You need to make sure that the previous container you launched is killed, before launching a new one that uses the same port.
+
+```
+docker container ls
+docker rm -f <container-name>
+```
+
+Also:
+
+Execute a lsof command to find the process using the port (for me it was port 9090)
+
+```
+sudo lsof -i -P -n | grep 9090
+```
+
+Finally,  "kill" the process :
+
+```
+kill -9 <process id>
+```
+
+## Email notification Example
 
 ![Alert Example ](prometheus-operator/alertExample.png)
+
+## Install and configure a k3s edge cluster
+
+K3s is a highly available, certified Kubernetes distribution designed for production workloads in unattended, resource-constrained, remote locations or inside IoT appliances.
+
+This section provides a summary of how to install k3s (rancher), a lightweight and small kubernetes cluster, on Ubuntu 18.04. (For more detailed instructions, see the k3s documentation)
+
+1. Either login as root or elevate to root with sudo -i
+2. The full hostname of your machine must contain at least 2 dots. Check the full hostname:
+	`hostname`
+	hostname
+	If the full hostname of your machine contains less than 2 dots, change the hostname:
+	
+	`hostnamectl set-hostname <your-new-hostname-with-2-dots>`
+
+3. Install k3s with:
+
+```
+curl -sfL https://get.k3s.io | sh -
+
+# Check for Ready node, 
+#  takes maybe 30 seconds
+ 
+k3s kubectl get node
+```
+
+Or other compatible k8s offerings.
+
