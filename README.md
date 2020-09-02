@@ -115,6 +115,8 @@ hzn unregister -f
 
 ( --------- **verify** device registration cmd with policy.json)
 
+
+
 ```bash
 hzn register -policy f horizon/node.policy.json
 ```
@@ -131,6 +133,8 @@ hzn register -policy f horizon/node.policy.json
       "state == configured"
     ],
  ```
+ 
+ ![Policy Example ](prometheus-operator/edge-monitoring.png)
 
 2. After the agreement is made, list the docker container edge service that has been started as a result:
 
