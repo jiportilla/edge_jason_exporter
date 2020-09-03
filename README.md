@@ -44,11 +44,11 @@ hzn exchange node confirm
 
 ## <a id=configuring></a> Configuring the JSON Exporter Service
 
-If you have not done so already, you must do these steps before proceeding with the JSON Exporter service:
+You should complete these steps before proceeding with the JSON Exporter service:
 
 1. List the event logs for the current or all registrations in the edge device with:
 
-`hzn eventlog list`
+`hzn eventlog list -l`
 
 2. Verify is a valid JSON format, for example:
 
