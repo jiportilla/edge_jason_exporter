@@ -6,6 +6,7 @@ Based on [https://github.com/prometheus-community/json_exporter](https://github.
 
 - [Preconditions for Using the JSON Exporter Service](#preconditions)
 - [Configuring the JSON Exporter Service](#configuring)
+- [Building and Publishing the JSON exporter service](#building)
 - [Using the JSON Exporter Service with Deployment Policy](#using-JSON-exporter)
 ![Prometheus architecture ](docs/prometheus-design.png)
 
@@ -92,6 +93,44 @@ You should complete these steps before proceeding with the JSON Exporter service
     timestamp: $.timestamp
 ```
 
+## <a id=building></a>Building and Publishing the JSON exporter service
+
+1. Clone this git repository:
+
+```bash
+cd ~   # or wherever you want
+git clone git@github.com:jiportilla/edge_json_exporter.git
+cd ~/edge_json_exporter/
+```
+
+2. Set the values in `horizon/hzn/json` to your liking. These variables are used in the service file. They are also used in some of the commands in this procedure. After editing `horizon/hzn.json`, set the variables in your environment:
+
+```bash
+export ARCH=$(hzn architecture)
+eval $(hzn util configconv -f horizon/hzn.json)
+```
+
+3. Build the docker image:
+
+```bash
+make build
+```
+
+For example, when using the default values provided in this github repo [hnz.json](https://github.com/jiportilla/edge_json_exporter/blob/master/horizon/hzn.json) configuration file:
+
+
+```bash
+docker build --network="host" -t iportilla/jexporter_amd64:1.0.0 -f ./Dockerfile.amd64 .
+```
+
+3. You are now ready to publish your edge service, so that it can be deployed to real edge nodes. Instruct Horizon to push your docker image to your registry and publish your service in the Horizon Exchange:
+
+```bash
+hzn exchange service publish -f horizon/service.definition.json
+hzn exchange service list
+```
+
+See [Developing an edge service for devices](https://www-03preprod.ibm.com/support/knowledgecenter/SSFKVV_4.1/devices/developing/developing.html) for additional details.
 
 ## <a id=using-JSON-exporter></a> Using the JSON Exporter Service with Deployment Policy
 
