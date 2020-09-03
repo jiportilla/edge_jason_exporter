@@ -54,7 +54,7 @@ Notice the `severity` and `message` content in the resulting JSON. This informat
 
 ## 2. Exporting Edge Node Event Log data to Prometheus
 
-![Prometheus architecture ](prometheus-operator/ieam-prometheus-design.png)
+![Prometheus architecture ](prometheus-operator/prometheus-design.png)
 
 The Prometheus development community has created a JSON Exporter to scrape remote JSON data by JSONPath. Source code is available on [Github](https://github.com/prometheus-community/json_exporter)
 
