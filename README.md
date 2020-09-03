@@ -1,4 +1,4 @@
-# Edge JSON Exporter
+# Smart Edge Monitoring with Prometheus operators
 Edge Node JSON Exporter
 
 This is a simple example of using and creating a JSON Exporter service.
@@ -8,7 +8,7 @@ This is a simple example of using and creating a JSON Exporter service.
 - [Creating Your Own Prometheus-operator monitoring solution](CreateService.md)
 - Further Learning - to see more Horizon features demonstrated, continue on to the [cpu2evtstreams example](../../evtstreams/cpu2evtstreams).
 
-Additionally content will includes:
+Additionally content will include:
 
 1. What is anax Event log API, what type of information is available on the Edge nodes
 2. How can you expose Event Log information as Prometheus metrics using the JSON exporter
