@@ -46,8 +46,51 @@ hzn exchange node confirm
 
 If you have not done so already, you must do these steps before proceeding with the JSON Exporter service:
 
-1. Update `config.yaml`
-2. 
+1. List the event logs for the current or all registrations in the edge device with:
+
+`hzn eventlog list`
+
+2. Verify is a valid JSON format, for example:
+
+```json
+{
+    "record_id": "1",
+    "timestamp": "2020-11-03 15:32:35 +0000 UTC",
+    "severity": "info",
+    "message": "Workload service containers for mycluster/json.exporter are up and running.",
+    "event_code": "container_running",
+    "source_type": "agreement",
+    "event_source": {
+      "agreement_id": "f10d230a3dcdd3e6beee137e89f485daeb0da78e27c6eb87589a26b00402242c",
+      "workload_to_run": {
+        "url": "json.exporter",
+        "org": "mycluster",
+        "version": "1.0.0",
+        "arch": "amd64"
+      },
+      "dependent_services": [],
+      "consumer_id": "IBM/mycluster-agbot",
+      "agreement_protocol": "Basic"
+    }
+  }
+```
+
+3. Update the provided `config.yml` file to select which JSON elements will be exposed by the JSON exporter service using JSONPath, for example for messages with **severity=info** use
+
+```
+- name: EventLog
+  type: object
+  path: $[*]?(@.severity == "info")
+  labels:
+    environment: edge_development
+    id: $.record_id
+    source_type: $.source_type
+    event_code: $.event_code
+    message: $.message
+  values:
+    info: 1
+    timestamp: $.timestamp
+```
 
 
 ## <a id=using-JSON-exporter></a> Using the JSON Exporter Service with Deployment Policy
