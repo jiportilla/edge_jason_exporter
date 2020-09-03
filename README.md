@@ -54,6 +54,8 @@ Notice the `severity` and `message` content in the resulting JSON. This informat
 
 ## 2. Exporting Edge Node Event Log data to Prometheus
 
+![Prometheus architecture ](prometheus-operator/ieam-prometheus-design.png)
+
 The Prometheus development community has created a JSON Exporter to scrape remote JSON data by JSONPath. Source code is available on [Github](https://github.com/prometheus-community/json_exporter)
 
 ## 3. Configure rules in Prometheus to trigger alerts to AlertManager
@@ -163,6 +165,65 @@ To list the created ingresses, run kubectl get ingress --all-namespaces, if you 
 - Grafana on https://grafana.[your_node_ip].nip.io,
 - Prometheus on https://prometheus.[your_node_ip].nip.io
 - Alertmanager on https://alertmanager.[your_node_ip].nip.io
+
+### Edge Monitoring
+
+1. Update the sample `external-servers.yaml` with the IP address(es) of the Edge Nodes to be monitored.
+2. Apply the `external-servers.yaml` to the Prometheus operator with `kubectl -n monitoring -f external-servers.yaml`
+3. Verify a `Service`, `ServiceMonitor` and `Endpoints` elements were created in the k8s cluster
+
+Sample `external-servers.yaml` is listed here:
+
+```
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: edge-monitoring
+  namespace: monitoring
+  labels:
+    k8s-app: edge-monitoring
+spec:
+  type: ClusterIP
+  clusterIP: None
+  ports:
+  - name: metrics
+    port: 7979
+    protocol: TCP
+---
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: edge-monitoring
+  labels:
+    k8s-app: edge-monitoring
+spec:
+  endpoints:
+  - port: metrics
+    interval: 30s
+    scheme: http
+  selector:
+    matchLabels:
+      k8s-app: edge-monitoring
+  namespaceSelector:
+    matchNames:
+    - monitoring
+---
+apiVersion: v1
+kind: Endpoints
+metadata:
+  name: edge-monitoring
+  labels:
+    k8s-app: edge-monitoring
+subsets:
+- addresses:
+  - ip: xx.xx.xx.xx
+  - ip: yy.yy.yy.yy
+  ports:
+  - name: metrics
+    port: 7979
+    protocol: TCP
+```
 
 ### Pre-reqs
 
