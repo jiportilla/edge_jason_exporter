@@ -1,75 +1,13 @@
-# Smart Edge Monitoring with Prometheus operators
-Edge Node JSON Exporter
+# JSON Exporter Service
 
-This is a simple example of using and creating a JSON Exporter service.
+This is an example of creating and using an edge exporter service which scrapes JSON by JSONPath for [prometheus](https://prometheus.io/) monitoring
+
+Based on [https://github.com/prometheus-community/json_exporter](https://github.com/prometheus-community/json_exporter)
 
 - [Preconditions for Using the JSON Exporter Service](#preconditions)
-- [Using the JSON Exporter Service with Deployment Policy](PolicyRegister.md)
-- [Creating Your Own Prometheus-operator monitoring solution](CreateService.md)
-- Further Learning - to see more Horizon features demonstrated, continue on to the [cpu2evtstreams example](../../evtstreams/cpu2evtstreams).
-
-Additionally content will include:
-
-1. What is anax Event log API, what type of information is available on the Edge nodes
-2. How can you expose Event Log information as Prometheus metrics using the JSON exporter
-3. Configure rules in Prometheus to trigger alerts to AlertManager
-4. Use AlertManager to send notifications to Edge administrators
-
-## 1. Edge Node EventLog Rest API
-Anax provides an Event Log rest API,
-
-For example, List the event logs for the current or all registrations with:
-
-`hzn eventlog list`
-
-
-Event Log API source code is avaialble at:
-[EventLog API](https://github.com/open-horizon/anax/blob/master/cli/eventlog/eventlog.go)
-
-Here is an example of the information provided with `hzn eventlog list -l` command:
-
-```
- {
-    "record_id": "10",
-    "timestamp": "2020-09-09 12:37:21 -0700 PDT",
-    "severity": "error",
-    "message": "Error starting containers: API error (500): driver failed programming external connectivity on endpoint 7996f592634d22c5583f74b0404cc77fd69969879fa5ec321e0cf2c70ef38043-acme-motion-detection-service-gpu (b3623ba8977d822fc4b0d47614e6cabb07b4f7d9b7004e5829aaa6440bb248d7): Bind for 0.0.0.0:9080 failed: port is already allocated",
-    "event_code": "error_start_container",
-    "source_type": "agreement",
-    "event_source": {
-      "agreement_id": "7996f592634d22c5583f74b0404cc77fd69969879fa5ec321e0cf2c70ef38043",
-      "workload_to_run": {
-        "url": "acme-motion-detection-service-gpu",
-        "org": "ipcluster",
-        "version": "1.0.0",
-        "arch": "amd64"
-      },
-      "dependent_services": [],
-      "consumer_id": "IBM/ipcluster-agbot",
-      "agreement_protocol": "Basic"
-    }
-  }
-```
-Notice the `severity` and `message` content in the resulting JSON. This information will exported to Prometheus.
-
-## 2. Exporting Edge Node Event Log data to Prometheus
-
-![Prometheus architecture ](prometheus-operator/prometheus-design.png)
-
-The Prometheus development community has created a JSON Exporter to scrape remote JSON data by JSONPath. Source code is available on [Github](https://github.com/prometheus-community/json_exporter)
-
-## 3. Configure rules in Prometheus to trigger alerts to AlertManager
-
-The Prometheus ecosystem consists of multiple components, many of which are optional.
-
-### Architecture
-
-This diagram illustrates the architecture of Prometheus and some of its ecosystem components:
-
-![Prometheus architecture ](prometheus-operator/prometheus-architecture.png)
-
-
-[architecture](https://prometheus.io/docs/introduction/overview/)
+- [Configuring the JSON Exporter Service](#configuring)
+- [Using the JSON Exporter Service with Deployment Policy](#using-JSON-exporter)
+![Prometheus architecture ](docs/prometheus-design.png)
 
 ## <a id=preconditions></a> Preconditions for Using the JSON Exporter Service
 
@@ -104,203 +42,15 @@ hzn exchange node create -n $HZN_EXCHANGE_NODE_AUTH
 hzn exchange node confirm
 ```
 
-6. If you have not done so already, unregister your node before moving on:
- ```bash
-hzn unregister -f
-```
+## <a id=configuring></a> Configuring the JSON Exporter Service
+
+If you have not done so already, you must do these steps before proceeding with the JSON Exporter service:
+
+1. Update `config.yaml`
+2. 
+
 
 ## <a id=using-JSON-exporter></a> Using the JSON Exporter Service with Deployment Policy
-
-![Edge Prometheus Operator ](prometheus-operator/Edge-Prometheus-operator.png)
-
-The Prometheus Operator for Kubernetes provides easy monitoring definitions for Kubernetes services and deployment and management of Prometheus instances.
-
-This have been tested on a X84-64 Kubernetes cluster.
-
-This repository collects Kubernetes manifests, Grafana dashboards, and Prometheus rules combined with documentation and scripts to provide easy to operate end-to-end Kubernetes cluster monitoring with Prometheus using the Prometheus Operator. The container images support AMD64, ARM64, ARM and PPC64le architectures.
-
-The content of this project is written in jsonnet and is an extension of the fantastic kube-prometheus project.
-
-
-Components included in this package:
-
-The Prometheus Operator
-Highly available Prometheus
-Highly available Alertmanager
-Prometheus node-exporter
-kube-state-metrics
-CoreDNS
-Grafana
-SMTP relay to Gmail for Grafana notifications (optional)
-
-[Cluster Monitoring](https://github.com/carlosedp/cluster-monitoring)
-
-## Quickstart for K3S
-To deploy the monitoring stack on your K3s cluster, there are four parameters that need to be configured in the vars.jsonnet file:
-
-1. Set k3s.enabled to true.
-2. Change your K3s master node IP(your VM or host IP) on k3s.master_ip parameter.
-3. Edit suffixDomain to have your node IP with the .nip.io suffix or your cluster URL. This will be your ingress URL suffix.
-4. Set traefikExporter enabled parameter to true to collect Traefik metrics and deploy dashboard.
-After changing these values to deploy the stack, run:
-
-```
-$ make vendor
-$ make
-$ make deploy
-
-# Or manually:
-
-$ make vendor
-$ make
-$ kubectl apply -f manifests/setup/
-$ kubectl apply -f manifests/
-```
-
-### Ingress
-Now you can open the applications:
-
-To list the created ingresses, run kubectl get ingress --all-namespaces, if you added your cluster IP or URL suffix in vars.jsonnet before rebuilding the manifests, the applications will be exposed on:
-
-- Grafana on https://grafana.[your_node_ip].nip.io,
-- Prometheus on https://prometheus.[your_node_ip].nip.io
-- Alertmanager on https://alertmanager.[your_node_ip].nip.io
-
-### Pre-reqs
-
-The project requires json-bundler and the jsonnet compiler. The Makefile does the heavy-lifting of installing them. You need Go already installed:
-
-```
-git clone https://github.com/carlosedp/cluster-monitoring
-cd cluster-monitoring
-make vendor
-# Change the jsonnet files...
-make
-
-```
-After this, a new customized set of manifests is built into the manifests dir. To apply to your cluster, run:
-
-`make deploy`
-
-To uninstall run:
-
-`make teardown`
-
-### Edge Monitoring
-
-1. Update the sample `external-servers.yaml` with the IP address(es) of the Edge Nodes to be monitored.
-2. Apply the `external-servers.yaml` to the Prometheus operator with `kubectl -n monitoring -f external-servers.yaml`
-3. Verify a `Service`, `ServiceMonitor` and `Endpoints` elements were created in the k8s cluster
-
-Sample `external-servers.yaml` is listed here:
-
-```
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: edge-monitoring
-  namespace: monitoring
-  labels:
-    k8s-app: edge-monitoring
-spec:
-  type: ClusterIP
-  clusterIP: None
-  ports:
-  - name: metrics
-    port: 7979
-    protocol: TCP
----
-apiVersion: monitoring.coreos.com/v1
-kind: ServiceMonitor
-metadata:
-  name: edge-monitoring
-  labels:
-    k8s-app: edge-monitoring
-spec:
-  endpoints:
-  - port: metrics
-    interval: 30s
-    scheme: http
-  selector:
-    matchLabels:
-      k8s-app: edge-monitoring
-  namespaceSelector:
-    matchNames:
-    - monitoring
----
-apiVersion: v1
-kind: Endpoints
-metadata:
-  name: edge-monitoring
-  labels:
-    k8s-app: edge-monitoring
-subsets:
-- addresses:
-  - ip: xx.xx.xx.xx
-  - ip: yy.yy.yy.yy
-  ports:
-  - name: metrics
-    port: 7979
-    protocol: TCP
-```
-
-### Prometheus Rules
-
-1. Update the `prometheus-rules.yaml` file with the desired conditions and severity using Prometheus PromQL:
-
-```
- - name: edge.rules
-    rules:
-    - alert: EventLog
-      annotations:
-        message: 'Errors from EventLog in {{ $labels.namespace }} Namespace, at {{ $labels.service }} Service, in {{ $labels.instance }} Instance'
-        runbook_url: https://github.com/kubernetes-monitoring/kubernetes-mixin/tree/master/runbook.md
-        summary: Edge Node EventLog is reporting errors.
-      expr: |
-        count  by (namespace, service, instance) ( EventLog_error_info ) > 5
-      for: 2m
-      labels:
-        severity: critical
-```
-
-2. Apply the `prometheus-rules.yaml` with `kubectl -n monitoring apply -f prometheus-rules.yaml`
-3. Verify the rules in Prometheus were update by opening the Alerts page at `http://prometheus.[your_node_ip].nip.io/alerts`
-
-
-### AlertManager configuration
-
-1. Update the `alertmanager-secret.yaml` file with routes and receiver information, for example:
-
-```
- - "name": "edge-alert"
-      email_configs:
-      - to: some-recipient@gmail.com
-        from: some-user@gmail.com
-        smarthost: smtp.gmail.com:587
-        auth_username: some-user@gmail.com
-        auth_identity: some-user@gmail.com
-        auth_password: ****
-        headers:
-          From: some-user@gmail.com
-          Subject: 'Edge EventLog alert'
-    "route":
-      "group_by":
-      - "alertname"
-      "group_interval": "5m"
-      "group_wait": "30s"
-      "receiver": "edge-alert"
-      "repeat_interval": "12h"
-      "routes":
-      - "match":
-          "alertname": "EventLog"
-        "receiver": "edge-alert"
-```
-
-2. Verify Alert Manager configuration at `https://alertmanager.[your_node_ip].nip.io`
-
-
-## Edge Node registration
 
 1. Register your edge node with Horizon to use the JSON exporter edge service:
 
@@ -325,7 +75,7 @@ hzn register -policy f horizon/node.policy.json
     ],
  ```
  
- ![Policy Example ](prometheus-operator/edge-monitoring.png)
+ ![Policy Example ](docs/edge-monitoring.png)
 
 2. After the agreement is made, list the docker container edge service that has been started as a result:
 
@@ -342,90 +92,4 @@ fdf7d0260303        iportilla/jexporter_amd64   "/bin/json_exporter …"   13 da
 curl localhost:7979/eventlog
 ```
  - **Note**: Press **Ctrl C** to stop the command output.
-
-4. Unregister your edge node (which will also stop the myhelloworld service):
-
-```bash
-hzn unregister -f
-```
-## Error Examples
-
-Description of problem:
-
-**Bind for 0.0.0.0:9080 failed: port is already allocated**
-
-How reproducible:
-After Edge Registration.
-
-Actual Results:
-The container fails to start.
-
-Expected Results:
-Container starts.
-
-Additional info:
-
-Tail of /var/log/upstart/docker.log (after restarting Docker):
-
-Resolution:
-Another docker container was still running in the background from a different project.
-
-This can be fixed by running:
-
-```
-docker stop $(docker ps -a -q)
-docker rm $(docker ps -a -q)
-```
-
-You need to make sure that the previous container you launched is killed, before launching a new one that uses the same port.
-
-```
-docker container ls
-docker rm -f <container-name>
-```
-
-Also:
-
-Execute a lsof command to find the process using the port (for me it was port 9090)
-
-```
-sudo lsof -i -P -n | grep 9090
-```
-
-Finally,  "kill" the process :
-
-```
-kill -9 <process id>
-```
-
-## Email notification Example
-
-![Alert Example ](prometheus-operator/alertExample.png)
-
-## Install and configure a k3s edge cluster
-
-K3s is a highly available, certified Kubernetes distribution designed for production workloads in unattended, resource-constrained, remote locations or inside IoT appliances.
-
-This section provides a summary of how to install k3s (rancher), a lightweight and small kubernetes cluster, on Ubuntu 18.04. (For more detailed instructions, see the k3s documentation)
-
-1. Either login as root or elevate to root with sudo -i
-2. The full hostname of your machine must contain at least 2 dots. Check the full hostname:
-	`hostname`
-	hostname
-	If the full hostname of your machine contains less than 2 dots, change the hostname:
-	
-	`hostnamectl set-hostname <your-new-hostname-with-2-dots>`
-
-3. Install k3s with:
-
-```
-curl -sfL https://get.k3s.io | sh -
-
-# Check for Ready node, 
-#  takes maybe 30 seconds
- 
-k3s kubectl get node
-```
-
-Or other compatible k8s offerings.
 
