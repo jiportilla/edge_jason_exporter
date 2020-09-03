@@ -166,6 +166,26 @@ To list the created ingresses, run kubectl get ingress --all-namespaces, if you 
 - Prometheus on https://prometheus.[your_node_ip].nip.io
 - Alertmanager on https://alertmanager.[your_node_ip].nip.io
 
+### Pre-reqs
+
+The project requires json-bundler and the jsonnet compiler. The Makefile does the heavy-lifting of installing them. You need Go already installed:
+
+```
+git clone https://github.com/carlosedp/cluster-monitoring
+cd cluster-monitoring
+make vendor
+# Change the jsonnet files...
+make
+
+```
+After this, a new customized set of manifests is built into the manifests dir. To apply to your cluster, run:
+
+`make deploy`
+
+To uninstall run:
+
+`make teardown`
+
 ### Edge Monitoring
 
 1. Update the sample `external-servers.yaml` with the IP address(es) of the Edge Nodes to be monitored.
@@ -225,25 +245,59 @@ subsets:
     protocol: TCP
 ```
 
-### Pre-reqs
+### Prometheus Rules
 
-The project requires json-bundler and the jsonnet compiler. The Makefile does the heavy-lifting of installing them. You need Go already installed:
-
-```
-git clone https://github.com/carlosedp/cluster-monitoring
-cd cluster-monitoring
-make vendor
-# Change the jsonnet files...
-make
+1. Update the `prometheus-rules.yaml` file with the desired conditions and severity using Prometheus PromQL:
 
 ```
-After this, a new customized set of manifests is built into the manifests dir. To apply to your cluster, run:
+ - name: edge.rules
+    rules:
+    - alert: EventLog
+      annotations:
+        message: 'Errors from EventLog in {{ $labels.namespace }} Namespace, at {{ $labels.service }} Service, in {{ $labels.instance }} Instance'
+        runbook_url: https://github.com/kubernetes-monitoring/kubernetes-mixin/tree/master/runbook.md
+        summary: Edge Node EventLog is reporting errors.
+      expr: |
+        count  by (namespace, service, instance) ( EventLog_error_info ) > 5
+      for: 2m
+      labels:
+        severity: critical
+```
 
-`make deploy`
+2. Apply the `prometheus-rules.yaml` with `kubectl -n monitoring apply -f prometheus-rules.yaml`
+3. Verify the rules in Prometheus were update by opening the Alerts page at `http://prometheus.[your_node_ip].nip.io/alerts`
 
-To uninstall run:
 
-`make teardown`
+### AlertManager configuration
+
+1. Update the `alertmanager-secret.yaml` file with routes and receiver information, for example:
+
+```
+ - "name": "edge-alert"
+      email_configs:
+      - to: some-recipient@gmail.com
+        from: some-user@gmail.com
+        smarthost: smtp.gmail.com:587
+        auth_username: some-user@gmail.com
+        auth_identity: some-user@gmail.com
+        auth_password: ****
+        headers:
+          From: some-user@gmail.com
+          Subject: 'Edge EventLog alert'
+    "route":
+      "group_by":
+      - "alertname"
+      "group_interval": "5m"
+      "group_wait": "30s"
+      "receiver": "edge-alert"
+      "repeat_interval": "12h"
+      "routes":
+      - "match":
+          "alertname": "EventLog"
+        "receiver": "edge-alert"
+```
+
+2. Verify Alert Manager configuration at `https://alertmanager.[your_node_ip].nip.io`
 
 
 ## Edge Node registration
