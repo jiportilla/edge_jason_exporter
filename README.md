@@ -45,6 +45,12 @@ export HZN_EXCHANGE_NODE_AUTH="<choose-any-node-id>:<choose-any-node-token>"
 hzn exchange node create -n $HZN_EXCHANGE_NODE_AUTH
 hzn exchange node confirm
 ```
+6. Register your edge device with the Exchange
+
+```bash
+hzn register
+```
+
 
 ## <a id=configuring></a> 2. Configuring the JSON Exporter Service
 
