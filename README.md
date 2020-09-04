@@ -63,6 +63,8 @@ cd ~/edge_json_exporter/
 
 `hzn eventlog list -l`
 
+ - **Note**: Press **Ctrl C** to stop the command output.
+
 3. Verify is a valid JSON format, for example:
 
 ```json
@@ -241,6 +243,8 @@ The output should look like:
 
 ### Deployment Policy
 
+![Policy Example ](docs/edge-monitoring.png)
+
 Deployment policy (sometimes called Business Policy) is what ties together edge nodes, published services, and the policies defined for each of those, making it roughly analogous to the deployment patterns you have previously worked with.
 
 DeploymentpPolicy, like the other two Policy types, contains a set of `properties` and a set of `constraints`, but it contains other things as well. For example, it explicitly identifies the Service it will cause to be deployed onto edge nodes if negotiation is successful, in addition to configuration variable values, performing the equivalent function to the `-f horizon/userinput.json` clause of a Deployment Pattern `hzn register ...` command. The Deployment Policy approach for configuration values is more powerful because this operation can be performed centrally (no need to connect directly to the edge node).
@@ -356,7 +360,7 @@ hzn exchange deployment listpolicy policy-json.exporter_1.0.0
 
 - The node registration step will be completed in this section:
 
-1. Below is the file provided in `policy/node.policy.json` with this JSON service:
+1. Below is the file provided in `policy/node.policy.json` with this JSON exporter service:
 
 ```json
 {
@@ -396,8 +400,32 @@ Next, verify an agreement is reached with
 ```bash
 hzn agreement list
 ```
+
+Expecting a similar output to:
+
+```json
+[
+  {
+    "name": "Policy for mycluster/CAM-B.demo.acme.com merged with mycluster/policy-json.exporter_1.0.0",
+    "current_agreement_id": "011ad9168fc9f9486f1a57be12ee7dc776392f52ec9f7baf68dbb6cf4769bf2b",
+    "consumer_id": "IBM/mycluster-agbot",
+    "agreement_creation_time": "2020-09-04 20:50:48 +0000 UTC",
+    "agreement_accepted_time": "2020-09-04 20:50:58 +0000 UTC",
+    "agreement_finalized_time": "2020-09-04 20:51:10 +0000 UTC",
+    "agreement_execution_start_time": "2020-09-04 20:50:59 +0000 UTC",
+    "agreement_data_received_time": "",
+    "agreement_protocol": "Basic",
+    "workload_to_run": {
+      "url": "json.exporter",
+      "org": "mycluster",
+      "version": "1.0.0",
+      "arch": "amd64"
+    }
+  }
+]
+```
  
- ![Policy Example ](docs/edge-monitoring.png)
+ 
 
 2. After the agreement is made, list the docker container edge service that has been started as a result:
 
@@ -413,5 +441,5 @@ fdf7d0260303        iportilla/jexporter_amd64   "/bin/json_exporter …"   13 da
 ``` bash
 curl localhost:7979/eventlog
 ```
- - **Note**: Press **Ctrl C** to stop the command output.
+
 
