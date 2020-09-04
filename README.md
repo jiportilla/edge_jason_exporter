@@ -349,14 +349,14 @@ hzn exchange deployment listpolicy policy-json.exporter_1.0.0
 }
 ```
 
-- Now that you have set up the Deployment Policy and the published Service policy is in the exchange, we can move on to the final step of defining a Policy for your Edge Node to tie them all together and cause software to be automatically deployed on your edge device.
+- Now that you have set up the Deployment Policy and the published Service policy is in the exchange, we can move on to the final step of defining a Policy for your edge device to tie them all together and cause software to be automatically deployed on your edge device.
 
 ### Node Policy
 
-- As an alternative to specifying a Deployment Pattern when you register your Edge Node, you may register with a Node Policy.
 
+- The node registration step will be completed in this section:
 
-1. Below is the file provided in `policy/node.policy.json` with this example:
+1. Below is the file provided in `policy/node.policy.json` with this JSON service:
 
 ```json
 {
@@ -376,31 +376,26 @@ hzn exchange deployment listpolicy policy-json.exporter_1.0.0
 }
 ```
 
-- It provides values for two `properties` (**state** and **openhorizon.allowPrivileged**), that will affect which service(s) get deployed to this edge device, and states one `constraint` (**purpose == monitoring**).
-
-The node registration step will be completed in the next section.
+- It provides values for two `properties` (**metrics** and **openhorizon.allowPrivileged**), that will affect which service(s) get deployed to this edge device, and states one `constraint` (**purpose == monitoring**).
 
 
-( --------- **verify** device registration cmd with policy.json)
+If you completed the edge registration as indicated in step 1, run the following command to update the edge device policy:
 
-
+```bash
+hzn policy update -f policy/node.policy.json
+```
+Otherwise, perform the edge device registration as follows:
 
 ```bash
 hzn register -policy f horizon/node.policy.json
 ```
  - **Note**: using the `-s` flag with the `hzn register` command will cause Horizon to wait until agreements are formed and the service is running on your edge node to exit, or alert you of any errors encountered during the registration process.
 
- 
- Publish json service with horizon/service.definition.json
- 
- 
- Publish deployment policy with *constraint*
- 
- ```
- "constraints": [
-      "state == configured"
-    ],
- ```
+Next, verify an agreement is reached with
+
+```bash
+hzn agreement list
+```
  
  ![Policy Example ](docs/edge-monitoring.png)
 
