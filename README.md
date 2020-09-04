@@ -315,6 +315,9 @@ hzn exchange deployment listpolicy edge-monitoring
 
 - The results should look very similar to your original `deployment.policy.json` file, except that `owner`, `created`, and `lastUpdated` and a few other fields have been added.
 
+**Review ***
+
+
 ```json
 {
   "mycluster/edge-monitoring": {
