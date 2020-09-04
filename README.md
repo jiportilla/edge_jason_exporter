@@ -446,7 +446,7 @@ fdf7d0260303        iportilla/jexporter_amd64   "/bin/json_exporter …"   13 da
 3. See the Monitoring service output:
 
 ``` bash
-curl localhost:7979/eventlog
+curl localhost:7979/metrics
 ```
 
 
