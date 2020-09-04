@@ -152,6 +152,8 @@ See [Developing an edge service for devices](https://www-03preprod.ibm.com/suppo
 
 ## <a id=using-JSON-exporter></a> 4. Using the JSON Exporter Service with Deployment Policy
 
+![Policy Example ](docs/edge-monitoring.png)
+
 The Horizon Policy mechanism offers an alternative to using deployment patterns. Policies provide much finer control over the deployment placement of edge services. Policies also provide a greater separation of concerns, allowing edge nodes owners, service code developers, and business owners to each independently articulate their own policies. There are three main types of Horizon Policies:
 
 1. Service Policy (may be applied to a published service in the Exchange)
@@ -249,7 +251,6 @@ The output should look like:
 
 ### Deployment Policy
 
-![Policy Example ](docs/edge-monitoring.png)
 
 Deployment policy (sometimes called Business Policy) is what ties together edge nodes, published services, and the policies defined for each of those, making it roughly analogous to the deployment patterns you have previously worked with.
 
@@ -310,7 +311,7 @@ make publish-deployment-policy
 For example:
 
 ```bash
-hzn exchange deployment addpolicy -f policy/deployment.policy.json mycluster/policy-json.exporter_1.0.0
+hzn exchange deployment addpolicy -f policy/deployment.policy.json policy-json.exporter_1.0.0
 
 ```
 
