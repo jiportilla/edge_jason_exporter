@@ -1,23 +1,15 @@
 {
   "properties": [
     {
-      "name": "state",
-      "value": "configured"
+      "name": "metrics",
+      "value": "prometheus"
     },
     {
       "name": "openhorizon.allowPrivileged",
       "value": true
-    },
-    {
-      "name": "type",
-      "value": "Security-Cam"
-    },
-    {
-      "name": "GPU-enabled",
-      "value": "false"
     }
   ],
   "constraints": [
-    "purpose == monitoring OR purpose == security-monitoring"
+    "purpose == monitoring"
   ]
 }
