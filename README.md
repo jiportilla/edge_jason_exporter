@@ -136,41 +136,11 @@ See [Developing an edge service for devices](https://www-03preprod.ibm.com/suppo
 
 The Horizon Policy mechanism offers an alternative to using Deployment Patterns. Policies provide much finer control over the deployment placement of edge services. Policies also provide a greater separation of concerns, allowing Edge Nodes owners, Service code developers, and Business owners to each independently articulate their own Policies. There are three types of Horizon Policies:
 
-1. Node Policy (provided at registration time by the node owner)
-
-2. Service Policy (may be applied to a published Service in the Exchange)
-
-3. Deployment Policy (which approximately corresponds to a Deployment Pattern)
-
-### Node Policy
-
-- As an alternative to specifying a Deployment Pattern when you register your Edge Node, you may register with a Node Policy.
 
 
-1. Below is the file provided in `policy/node.policy.json` with this example:
-
-```json
-{
-  "properties": [
-     {
-      "name": "state",
-      "value": "configured"
-    },
-    {
-      "name": "openhorizon.allowPrivileged",
-      "value": true
-    },
-  ],
-  "constraints": [
-  	"purpose == monitoring"
-  ]
-}
-```
-
-- It provides values for two `properties` (**state** and **openhorizon.allowPrivileged**), that will affect which service(s) get deployed to this edge device, and states one `constraint` (**purpose == monitoring**).
-
-The node registration step will be completed in the next section.
-
+1. Service Policy (may be applied to a published Service in the Exchange)
+2. Deployment Policy (which approximately corresponds to a Deployment Pattern)
+3. Node Policy (provided at registration time by the node owner)
 
 ### Service Policy
 
@@ -193,7 +163,7 @@ Like the other two Policy types, Service Policy contains a set of `properties` a
 }
 ```
 
-- Note this simple Service Policy provides one `property`, and it states one `constraint`. This example `constraint` is one that a Service developer might add, stating that their Service must only run on cpu architecture named `amd64`. If you recall the Node Policy we used above, the openhorizon.arch `property` is set to `amd64` during registration, so this Service should be compatible with our Edge device.
+- Note this simple Service Policy provides one `property` **purpose=monitoring**, and it states one `constraint`. This JSON Exporter Service `constraint` is one that a Service developer might add, stating that their Service must only run on cpu architecture named **amd64**. During node registration the `openhorizon.arch` property will be set to **amd64**, so this JSON Exportert Service should be compatible with our Edge device.
 
 2. If needed, run the following commands to set the environment variables needed by the `service.policy.json` file in your shell:
 
@@ -202,12 +172,13 @@ export ARCH=$(hzn architecture)
 eval $(hzn util configconv -f horizon/hzn.json)
 ```
 
-3. Optionally, add or replace the service policy in the Horizon Exchange for this JSON Exporter Service:
+3. Next, add or replace the service policy in the Horizon Exchange for this JSON Exporter Service:
 
 ```bash
 make publish-service-policy
 ```
 For example:
+
 ```bash
 hzn exchange service addpolicy -f policy/service.policy.json json.exporter_1.0.0_amd64
 
@@ -221,7 +192,7 @@ hzn exchange service listpolicy json.exporter_1.0.0_amd64
 
 - Notice that Horizon has again automatically added some additional `properties` to your Policy. These generated property values can be used in `constraints` in Node Policies and Deployment Policies.
 
-- Now that you have set up the Policy for your Edge Node and the published Service policy is in the exchange, we can move on to the final step of defining a Deployment Policy to tie them all together and cause software to be automatically deployed on your Edge Node.
+- Now that you have set up the published Service policy is in the exchange, we can move on to the next step of defining a Deployment Policy.
 
 
 ### Deployment Policy
@@ -263,7 +234,7 @@ Deployment Policy, like the other two Policy types, contains a set of `propertie
 }
 ```
 
-- This simple example of a Deployment Policy provides one `constraint` (`state`) that is satisfied by one of the `properties` set in the `node.policy.json` file, so this Deployment Policy should successfully deploy our JSON Exporter Service onto the Edge device.
+- This simple example of a Deployment Policy provides one `constraint` **state** that needs to be satisfied by one of the `properties` set in the `node.policy.json` file, so this Deployment Policy should successfully deploy our JSON Exporter Service onto the Edge device.
 
 - At the end, the userInput section has the same purpose as the `horizon/userinput.json` files provided for other examples if the given services requires them. In this case the example service defines does not have configuration variables.
 
@@ -299,7 +270,36 @@ hzn exchange deployment listpolicy json.exporter.dp
 
 - The results should look very similar to your original `deployment.policy.json` file, except that `owner`, `created`, and `lastUpdated` and a few other fields have been added.
 
+- Now that you have set up the Deployment Policy and the published Service policy is in the exchange, we can move on to the final step of defining a Policy for your Edge Node to tie them all together and cause software to be automatically deployed on your edge device.
 
+### Node Policy
+
+- As an alternative to specifying a Deployment Pattern when you register your Edge Node, you may register with a Node Policy.
+
+
+1. Below is the file provided in `policy/node.policy.json` with this example:
+
+```json
+{
+  "properties": [
+     {
+      "name": "state",
+      "value": "configured"
+    },
+    {
+      "name": "openhorizon.allowPrivileged",
+      "value": true
+    },
+  ],
+  "constraints": [
+  	"purpose == monitoring"
+  ]
+}
+```
+
+- It provides values for two `properties` (**state** and **openhorizon.allowPrivileged**), that will affect which service(s) get deployed to this edge device, and states one `constraint` (**purpose == monitoring**).
+
+The node registration step will be completed in the next section.
 
 
 ( --------- **verify** device registration cmd with policy.json)
