@@ -450,3 +450,31 @@ curl localhost:7979/metrics
 ```
 
 - **Note**: Press **Ctrl C** to stop the command output.
+
+Expect to see an output similar to:
+
+```text
+# HELP EventLog_info EventLog - info
+# TYPE EventLog_info gauge
+EventLog_info{environment="edge_development",event_code="agreement_canceled",id="13",message="Complete terminating agreement for json.exporter. Termination reason: node policy changed",source_type="agreement"} 1
+EventLog_info{environment="edge_development",event_code="agreement_canceled",id="23",message="Complete terminating agreement for json.exporter. Termination reason: node policy changed",source_type="agreement"} 1
+EventLog_info{environment="edge_development",event_code="agreement_canceled",id="35",message="Complete terminating agreement for json.exporter. Termination reason: node policy changed",source_type="agreement"} 1
+EventLog_info{environment="edge_development",event_code="agreement_reached",id="16",message="Agreement reached for service json.exporter. The agreement id is 622bf80b7c074196fa6b684f0787e32c8970c441c25067d6a926f2d1247f7726.",source_type="agreement"} 1
+EventLog_info{environment="edge_development",event_code="agreement_reached",id="26",message="Agreement reached for service json.exporter. The agreement id is 806c2bb2ff84dd55c00ec338c74f2f9a987512fd6a828e1633ee02b90a530e4c.",source_type="agreement"} 1
+EventLog_info{environment="edge_development",event_code="agreement_reached",id="41",message="Agreement reached for service json.exporter. The agreement id is 72a6bef8e77a82b725778572af1187b99536e208ff8f83ed064d770c6194a8ae.",source_type="agreement"} 1
+EventLog_info{environment="edge_development",event_code="agreement_reached",id="6",message="Agreement reached for service json.exporter. The agreement id is e7a284b32fd99d7bc5179caeeab41b3a18d00d93ae1c7a8a6c0368fc29ef214a.",source_type="agreement"} 1
+EventLog_info{environment="edge_development",event_code="cancel_agreement",id="12",message="Start terminating agreement for json.exporter. Termination reason: node policy changed",source_type="agreement"} 1
+EventLog_info{environment="edge_development",event_code="cancel_agreement",id="22",message="Start terminating agreement for json.exporter. Termination reason: node policy changed",source_type="agreement"} 1
+EventLog_info{environment="edge_development",event_code="cancel_agreement",id="34",message="Start terminating agreement for json.exporter. Termination reason: node policy changed",source_type="agreement"} 1
+EventLog_info{environment="edge_development",event_code="container_running",id="10",message="Workload service containers for mycluster/json.exporter are up and running.",source_type="agreement"} 1
+EventLog_info{environment="edge_development",event_code="container_running",id="20",message="Workload service containers for mycluster/json.exporter are up and running.",source_type="agreement"} 1
+EventLog_info{environment="edge_development",event_code="container_running",id="32",message="Workload service containers for mycluster/json.exporter are up and running.",source_type="agreement"} 1
+EventLog_info{environment="edge_development",event_code="container_running",id="45",message="Workload service containers for mycluster/json.exporter are up and running.",source_type="agreement"} 1
+EventLog_info{environment="edge_development",event_code="container_stopped",id="14",message="Workload destroyed for json.exporter",source_type="agreement"} 1
+EventLog_info{environment="edge_development",event_code="container_stopped",id="24",message="Workload destroyed for json.exporter",source_type="agreement"} 1
+EventLog_info{environment="edge_development",event_code="container_stopped",id="36",message="Workload destroyed for json.exporter",source_type="agreement"} 1
+EventLog_info{environment="edge_development",event_code="image_loaded",id="19",message="Image loaded for mycluster/json.exporter.",source_type="agreement"} 1
+EventLog_info{environment="edge_development",event_code="image_loaded",id="31",message="Image loaded for mycluster/json.exporter.",source_type="agreement"} 1
+EventLog_info{environment="edge_development",event_code="image_loaded",id="44",message="Image loaded for mycluster/json.exporter.",source_type="agreement"} 1
+EventLog_info{environment="edge_development",event_code="image_loaded",id="9",message="Image loaded for mycluster/json.exporter.",source_type="agreement"} 1
+```
