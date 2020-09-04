@@ -204,6 +204,10 @@ The output should look like:
 {
   "properties": [
     {
+      "name": "purpose",
+      "value": "monitoring"
+    },
+    {
       "name": "openhorizon.service.url",
       "value": "json.exporter"
     },
@@ -222,10 +226,6 @@ The output should look like:
     {
       "name": "openhorizon.service.arch",
       "value": "amd64"
-    },
-    {
-      "name": "purpose",
-      "value": "monitoring"
     }
   ],
   "constraints": [
