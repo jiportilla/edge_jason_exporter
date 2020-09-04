@@ -293,37 +293,32 @@ optional: eval export $(cat agent-install.cfg)
 
 3. Publish this Deployment policy to the Exchange to deploy the `json.exporter` service to the edge device (give it a memorable name):
 
-
-**todo: update Makefile **
-
 ```bash
-make publish-business-policy
+make publish-deployment-policy
 ```
 
 For example:
 
 ```bash
-hzn exchange deployment addpolicy -f policy/deployment.policy.json edge-monitoring
+hzn exchange deployment addpolicy -f policy/deployment.policy.json mycluster/policy-json.exporter_1.0.0
 
 ```
 
 4. Verify the Deployment policy:
 
 ```bash
-hzn exchange deployment listpolicy edge-monitoring
+hzn exchange deployment listpolicy policy-json.exporter_1.0.0
 ```
 
 - The results should look very similar to your original `deployment.policy.json` file, except that `owner`, `created`, and `lastUpdated` and a few other fields have been added.
 
-**Review ***
-
 
 ```json
 {
-  "mycluster/edge-monitoring": {
+  "mycluster/policy-json.exporter_1.0.0": {
     "owner": "mycluster/ivan",
-    "label": "edge-monitoring",
-    "description": "with JSON Exporter and prometheus-operator",
+    "label": "Deployment policy for json.exporter",
+    "description": "A super-simple JSON Exporter Service deployment policy",
     "service": {
       "name": "json.exporter",
       "org": "mycluster",
@@ -340,8 +335,16 @@ hzn exchange deployment listpolicy edge-monitoring
     "constraints": [
       "metrics == prometheus"
     ],
-    "created": "2020-11-17T16:38:49.663Z[UTC]",
-    "lastUpdated": "2020-11-17T16:38:49.663Z[UTC]"
+    "userInput": [
+      {
+        "serviceOrgid": "mycluster",
+        "serviceUrl": "json.exporter",
+        "serviceVersionRange": "[0.0.0,INFINITY)",
+        "inputs": []
+      }
+    ],
+    "created": "2020-09-04T20:33:45.422Z[UTC]",
+    "lastUpdated": "2020-09-04T20:33:45.422Z[UTC]"
   }
 }
 ```
