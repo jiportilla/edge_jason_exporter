@@ -311,7 +311,7 @@ make publish-deployment-policy
 For example:
 
 ```bash
-hzn exchange deployment addpolicy -f policy/deployment.policy.json policy-json.exporter_1.0.0
+hzn exchange deployment addpolicy -f policy/deployment.policy.json mycluster/policy-json.exporter_1.0.0
 
 ```
 
