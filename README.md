@@ -4,13 +4,16 @@ This is an example of creating and using an edge exporter service which scrapes 
 
 Based on [https://github.com/prometheus-community/json_exporter](https://github.com/prometheus-community/json_exporter)
 
-- [Preconditions for Using the JSON Exporter Service](#preconditions)
-- [Configuring the JSON Exporter Service](#configuring)
-- [Building and Publishing the JSON Exporter Service](#building)
-- [Using the JSON Exporter Service with Deployment Policy](#using-JSON-exporter)
+[1. Preconditions for Using the JSON Exporter Service](#preconditions)
+
+[2. Configuring the JSON Exporter Service](#configuring)
+
+[3. Building and Publishing the JSON Exporter Service](#building)
+
+[4. Using the JSON Exporter Service with Deployment Policy](#using-JSON-exporter)
 ![Prometheus architecture ](docs/prometheus-design.png)
 
-## <a id=preconditions></a> Preconditions for Using the JSON Exporter Service
+## <a id=preconditions></a> 1. Preconditions for Using the JSON Exporter Service
 
 If you have not done so already, you must do these steps before proceeding with the JSON Exporter service:
 
@@ -20,7 +23,7 @@ If you have not done so already, you must do these steps before proceeding with 
 
 2. Install the Horizon agent on your edge device and configure it to point to your Horizon exchange.
 
-3. As part of the infrasctucture installation process for IBM Edge Computing Manager a file called `agent-install.cfg` was created that contains the values for `HZN_ORG_ID` and the exchange and css url values. Locate this file and set those environment variables in your shell now:
+3. As part of the infrasctucture installation process for IBM Edge Application Manager a file called `agent-install.cfg` was created that contains the values for `HZN_ORG_ID` and the **exchange** and **css** url values. Locate this file and set those environment variables in your shell now:
 
 ```bash
 eval export $(cat agent-install.cfg)
@@ -43,15 +46,24 @@ hzn exchange node create -n $HZN_EXCHANGE_NODE_AUTH
 hzn exchange node confirm
 ```
 
-## <a id=configuring></a> Configuring the JSON Exporter Service
+## <a id=configuring></a> 2. Configuring the JSON Exporter Service
 
-You should complete these steps before proceeding with the JSON Exporter service:
+You should complete these steps before proceeding building the JSON Exporter service:
 
-1. List the event logs for the current or all registrations in the edge device with:
+1. Clone this git repository:
+
+```bash
+cd ~   # or wherever you want
+git clone git@github.com:jiportilla/edge_json_exporter.git
+cd ~/edge_json_exporter/
+```
+
+
+2. List the event logs for the current or all registrations in the edge device with:
 
 `hzn eventlog list -l`
 
-2. Verify is a valid JSON format, for example:
+3. Verify is a valid JSON format, for example:
 
 ```json
 {
@@ -76,7 +88,7 @@ You should complete these steps before proceeding with the JSON Exporter service
   }
 ```
 
-3. Update the provided `config.yml` file to select which JSON elements will be exposed by the JSON exporter service using JSONPath, for example for messages with **severity=info** use
+4. Optionally, update the provided `config.yml` file to define which JSON elements will be exposed by the JSON exporter service using **JSONPath**, for example for messages with **severity=info** use:
 
 ```
 - name: EventLog
@@ -93,13 +105,11 @@ You should complete these steps before proceeding with the JSON Exporter service
     timestamp: $.timestamp
 ```
 
-## <a id=building></a>Building and Publishing the JSON Exporter Service
+## <a id=building></a> 3. Building and Publishing the JSON Exporter Service
 
-1. Clone this git repository:
+1. Change directories to the local copy:
 
 ```bash
-cd ~   # or wherever you want
-git clone git@github.com:jiportilla/edge_json_exporter.git
 cd ~/edge_json_exporter/
 ```
 
@@ -115,15 +125,15 @@ eval $(hzn util configconv -f horizon/hzn.json)
 ```bash
 make build
 ```
-
-For example, when using the default values provided in this github repo [hnz.json](https://github.com/jiportilla/edge_json_exporter/blob/master/horizon/hzn.json) configuration file:
+For example, when using the default values provided in this repo [hnz.json](https://github.com/jiportilla/edge_json_exporter/blob/master/horizon/hzn.json) configuration file:
+	
 
 
 ```bash
 docker build --network="host" -t iportilla/jexporter_amd64:1.0.0 -f ./Dockerfile.amd64 .
 ```
 
-3. You are now ready to publish your edge service, so that it can be deployed to real edge nodes. Instruct Horizon to push your docker image to your registry and publish your service in the Horizon Exchange:
+3. You are now ready to publish your edge service, so that it can be deployed to edge devices. Instruct Horizon to push your docker image to your registry and publish your service in the Horizon Exchange using:
 
 ```bash
 hzn exchange service publish -f horizon/service.definition.json
@@ -132,14 +142,12 @@ hzn exchange service list
 
 See [Developing an edge service for devices](https://www-03preprod.ibm.com/support/knowledgecenter/SSFKVV_4.1/devices/developing/developing.html) for additional details.
 
-## <a id=using-JSON-exporter></a> Using the JSON Exporter Service with Deployment Policy
+## <a id=using-JSON-exporter></a> 4. Using the JSON Exporter Service with Deployment Policy
 
-The Horizon Policy mechanism offers an alternative to using Deployment Patterns. Policies provide much finer control over the deployment placement of edge services. Policies also provide a greater separation of concerns, allowing Edge Nodes owners, Service code developers, and Business owners to each independently articulate their own Policies. There are three types of Horizon Policies:
+The Horizon Policy mechanism offers an alternative to using deployment patterns. Policies provide much finer control over the deployment placement of edge services. Policies also provide a greater separation of concerns, allowing edge nodes owners, service code developers, and business owners to each independently articulate their own policies. There are three main types of Horizon Policies:
 
-
-
-1. Service Policy (may be applied to a published Service in the Exchange)
-2. Deployment Policy (which approximately corresponds to a Deployment Pattern)
+1. Service Policy (may be applied to a published service in the Exchange)
+2. Deployment Policy (which approximately corresponds to a deployment pattern)
 3. Node Policy (provided at registration time by the node owner)
 
 ### Service Policy
@@ -158,12 +166,12 @@ Like the other two Policy types, Service Policy contains a set of `properties` a
     }
   ],
   "constraints": [
-       "openhorizon.arch == amd64"
+       "openhorizon.allowPrivileged == true"
   ]
 }
 ```
 
-- Note this simple Service Policy provides one `property` **purpose=monitoring**, and it states one `constraint`. This JSON Exporter Service `constraint` is one that a Service developer might add, stating that their Service must only run on cpu architecture named **amd64**. During node registration the `openhorizon.arch` property will be set to **amd64**, so this JSON Exportert Service should be compatible with our Edge device.
+- Note this simple Service Policy provides one `property` **purpose=monitoring**, and it states one `constraint`. This JSON Exporter Service `constraint` is one that a Service developer might add, stating that their Service must only be deployed when **openhorizon.allowPrivileged** equals to **true**. After node registration the **openhorizon.allowPrivileged** property will be set to **true**, so this JSON Exportert Service should be compatible with our edge device.
 
 2. If needed, run the following commands to set the environment variables needed by the `service.policy.json` file in your shell:
 
@@ -184,10 +192,46 @@ hzn exchange service addpolicy -f policy/service.policy.json json.exporter_1.0.0
 
 ```
 
-4. View the pubished service policy attached to `json.exporter` edge service:
+4. View the pubished service policy attached to the **json.exporter** edge service:
 
 ```bash
 hzn exchange service listpolicy json.exporter_1.0.0_amd64
+```
+
+The output should look like:
+
+```json
+{
+  "properties": [
+    {
+      "name": "openhorizon.service.url",
+      "value": "json.exporter"
+    },
+    {
+      "name": "openhorizon.service.name",
+      "value": "json.exporter"
+    },
+    {
+      "name": "openhorizon.service.org",
+      "value": "mycluster"
+    },
+    {
+      "name": "openhorizon.service.version",
+      "value": "1.0.0"
+    },
+    {
+      "name": "openhorizon.service.arch",
+      "value": "amd64"
+    },
+    {
+      "name": "purpose",
+      "value": "monitoring"
+    }
+  ],
+  "constraints": [
+    "openhorizon.allowPrivileged == true"
+  ]
+}
 ```
 
 - Notice that Horizon has again automatically added some additional `properties` to your Policy. These generated property values can be used in `constraints` in Node Policies and Deployment Policies.
@@ -197,16 +241,16 @@ hzn exchange service listpolicy json.exporter_1.0.0_amd64
 
 ### Deployment Policy
 
-Deployment Policy (sometimes called Business Policy) is what ties together Edge Nodes, Published Services, and the Policies defined for each of those, making it roughly analogous to the Deployment Patterns you have previously worked with.
+Deployment policy (sometimes called Business Policy) is what ties together edge nodes, published services, and the policies defined for each of those, making it roughly analogous to the deployment patterns you have previously worked with.
 
-Deployment Policy, like the other two Policy types, contains a set of `properties` and a set of `constraints`, but it contains other things as well. For example, it explicitly identifies the Service it will cause to be deployed onto Edge Nodes if negotiation is successful, in addition to configuration variable values, performing the equivalent function to the `-f horizon/userinput.json` clause of a Deployment Pattern `hzn register ...` command. The Deployment Policy approach for configuration values is more powerful because this operation can be performed centrally (no need to connect directly to the Edge Node).
+DeploymentpPolicy, like the other two Policy types, contains a set of `properties` and a set of `constraints`, but it contains other things as well. For example, it explicitly identifies the Service it will cause to be deployed onto edge nodes if negotiation is successful, in addition to configuration variable values, performing the equivalent function to the `-f horizon/userinput.json` clause of a Deployment Pattern `hzn register ...` command. The Deployment Policy approach for configuration values is more powerful because this operation can be performed centrally (no need to connect directly to the edge node).
 
 1. Below is the file provided in  `policy/deployment.policy.json` with this example:
 
 ```json
 {
   "label": "Deployment policy for $SERVICE_NAME",
-  "description": "A super-simple JSON Exporter Service demo",
+  "description": "A super-simple JSON Exporter Service deployment policy",
   "service": {
     "name": "$SERVICE_NAME",
     "org": "$HZN_ORG_ID",
@@ -220,7 +264,7 @@ Deployment Policy, like the other two Policy types, contains a set of `propertie
   },
   "properties": [],
   "constraints": [
-        "state == configured"
+        "metrics == prometheus"
   ],
   "userInput": [
     {
@@ -234,7 +278,7 @@ Deployment Policy, like the other two Policy types, contains a set of `propertie
 }
 ```
 
-- This simple example of a Deployment Policy provides one `constraint` **state** that needs to be satisfied by one of the `properties` set in the `node.policy.json` file, so this Deployment Policy should successfully deploy our JSON Exporter Service onto the Edge device.
+- This simple example of a Deployment policy provides one `constraint` **metrics** that needs to be satisfied by one of the `properties` set in the `node.policy.json` file, so this Deployment Policy should successfully deploy our JSON Exporter Service onto the edge device.
 
 - At the end, the userInput section has the same purpose as the `horizon/userinput.json` files provided for other examples if the given services requires them. In this case the example service defines does not have configuration variables.
 
@@ -247,7 +291,7 @@ eval $(hzn util configconv -f horizon/hzn.json)
 optional: eval export $(cat agent-install.cfg)
 ```
 
-3. Publish this Deployment Policy to the Exchange to deploy the `json.exporter` service to the Edge device (give it a memorable name):
+3. Publish this Deployment policy to the Exchange to deploy the `json.exporter` service to the edge device (give it a memorable name):
 
 
 **todo: update Makefile **
@@ -257,18 +301,47 @@ make publish-business-policy
 ```
 
 For example:
+
 ```bash
-hzn exchange deployment addpolicy -f policy/deployment.policy.json json.exporter.dp
+hzn exchange deployment addpolicy -f policy/deployment.policy.json edge-monitoring
 
 ```
 
 4. Verify the Deployment policy:
 
 ```bash
-hzn exchange deployment listpolicy json.exporter.dp
+hzn exchange deployment listpolicy edge-monitoring
 ```
 
 - The results should look very similar to your original `deployment.policy.json` file, except that `owner`, `created`, and `lastUpdated` and a few other fields have been added.
+
+```json
+{
+  "mycluster/edge-monitoring": {
+    "owner": "mycluster/ivan",
+    "label": "edge-monitoring",
+    "description": "with JSON Exporter and prometheus-operator",
+    "service": {
+      "name": "json.exporter",
+      "org": "mycluster",
+      "arch": "amd64",
+      "serviceVersions": [
+        {
+          "version": "1.0.0",
+          "priority": {},
+          "upgradePolicy": {}
+        }
+      ],
+      "nodeHealth": {}
+    },
+    "constraints": [
+      "metrics == prometheus"
+    ],
+    "created": "2020-11-17T16:38:49.663Z[UTC]",
+    "lastUpdated": "2020-11-17T16:38:49.663Z[UTC]"
+  }
+}
+```
 
 - Now that you have set up the Deployment Policy and the published Service policy is in the exchange, we can move on to the final step of defining a Policy for your Edge Node to tie them all together and cause software to be automatically deployed on your edge device.
 
@@ -283,8 +356,8 @@ hzn exchange deployment listpolicy json.exporter.dp
 {
   "properties": [
      {
-      "name": "state",
-      "value": "configured"
+      "name": "metrics",
+      "value": "prometheus"
     },
     {
       "name": "openhorizon.allowPrivileged",

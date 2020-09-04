@@ -6,6 +6,6 @@
     }
   ],
   "constraints": [
-    "openhorizon.arch == amd64"
+    "openhorizon.allowPrivileged == true"
   ]
 }
