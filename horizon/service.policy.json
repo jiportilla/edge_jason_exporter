@@ -1,7 +1,0 @@
-{
-  "properties": [
-  ],
-  "constraints": [
-    "openhorizon.memory >= 100"
-  ]
-}

@@ -3,7 +3,7 @@
     "label": "$SERVICE_NAME for $ARCH",
     "description": "A super-simple json_exporter Horizon service",
     "public": false,
-    "documentation": "https://github.com/open-horizon/examples/blob/master/edge/services/helloworld/README.md",
+    "documentation": "https://github.com/prometheus-community/json_exporter/blob/master/README.md",
     "url": "$SERVICE_NAME",
     "version": "$SERVICE_VERSION",
     "arch": "$ARCH",
