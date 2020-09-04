@@ -449,4 +449,4 @@ fdf7d0260303        iportilla/jexporter_amd64   "/bin/json_exporter …"   13 da
 curl localhost:7979/metrics
 ```
 
-
+- **Note**: Press **Ctrl C** to stop the command output.
