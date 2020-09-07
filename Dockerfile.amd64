@@ -17,4 +17,4 @@ COPY ./config.yml /bin/config.yml
 EXPOSE      7979
 USER        nobody
 ENTRYPOINT  [ "/bin/json_exporter" ]
-#CMD ["http://127.0.0.1:8510/eventlog","/bin/config.yml"]
+CMD ["http://127.0.0.1:8510/eventlog","/bin/config.yml"]
