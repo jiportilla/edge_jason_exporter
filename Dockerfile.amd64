@@ -7,13 +7,14 @@ LABEL maintainer="The Prometheus Authors <prometheus-developers@googlegroups.com
 ARG ARCH="amd64"
 ARG OS="linux"
 #COPY .build/${OS}-${ARCH}/json_exporter /bin/json_exporter
-COPY ./json_exporter /bin/json_exporter
+#COPY ./json_exporter /bin/json_exporter
+COPY ./json_exporter.${ARCH} /bin/json_exporter
 COPY ./config.yml /bin/config.yml
 
-ENV url http://127.0.0.1:8510/eventlog
-ENV config /bin/config.yml
+#ENV url http://127.0.0.1:8510/eventlog
+#ENV config /bin/config.yml
 
 EXPOSE      7979
 USER        nobody
 ENTRYPOINT  [ "/bin/json_exporter" ]
-CMD ["http://127.0.0.1:8510/eventlog","/bin/config.yml"]
+#CMD ["http://127.0.0.1:8510/eventlog","/bin/config.yml"]

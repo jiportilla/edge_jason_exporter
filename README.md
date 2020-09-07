@@ -11,7 +11,7 @@ Based on [https://github.com/prometheus-community/json_exporter](https://github.
 [3. Building and Publishing the JSON Exporter Service](#building)
 
 [4. Using the JSON Exporter Service with Deployment Policy](#using-JSON-exporter)
-![Prometheus architecture ](docs/prometheus-design.png)
+![Prometheus architecture ](docs/JSON-exporter.png)
 
 ## <a id=preconditions></a> 1. Preconditions for Using the JSON Exporter Service
 
