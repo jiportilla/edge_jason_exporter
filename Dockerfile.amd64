@@ -5,6 +5,7 @@ LABEL maintainer="The Prometheus Authors <prometheus-developers@googlegroups.com
 
 #COPY .build/${OS}-${ARCH}/json_exporter /bin/json_exporter
 
+ARG ARCH="amd64"
 COPY ./json_exporter.${ARCH} /bin/json_exporter
 COPY ./config.yml /bin/config.yml
 

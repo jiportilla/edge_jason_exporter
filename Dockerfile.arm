@@ -1,10 +1,12 @@
-ARG ARCH="arm"
-ARG OS="linux"
-FROM quay.io/prometheus/busybox-${OS}-${ARCH}:glibc
-LABEL maintainer="The Prometheus Authors <prometheus-developers@googlegroups.com>"
+#ARG ARCH="arm"
+#ARG OS="linux"
+#FROM quay.io/prometheus/busybox-${OS}-${ARCH}:glibc
 
+FROM arm32v6/alpine:latest
+LABEL maintainer="The Prometheus Authors <prometheus-developers@googlegroups.com>"
 #COPY .build/${OS}-${ARCH}/json_exporter /bin/json_exporter
 
+ARG ARCH="arm"
 COPY ./json_exporter.${ARCH} /bin/json_exporter
 COPY ./config.yml /bin/config.yml
 
