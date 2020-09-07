@@ -50,11 +50,11 @@ publish-pattern:
 
 # Publish Deployment Policy target for exchange publish script
 publish-deployment-policy:
-	hzn exchange deployment addpolicy -f policy/deployment.policy.json $(HZN_ORG_ID)/policy-$(SERVICE_NAME)_$(SERVICE_VERSION)
+	hzn exchange deployment addpolicy -f policy/deployment.policy.json $(HZN_ORG_ID)/policy-$(SERVICE_NAME)_$(SERVICE_VERSION)_$(ARCH)
 
 
 register-pattern:
-	hzn register -p pattern-json.exporter-amd64
+	hzn register -p pattern-$(SERVICE_NAME)_$(SERVICE_VERSION)_$(ARCH)
 
   # unregiser node
 unregister:
