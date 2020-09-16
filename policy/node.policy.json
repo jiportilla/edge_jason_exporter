@@ -10,6 +10,6 @@
     }
   ],
   "constraints": [
-    "purpose == monitoring"
+    "exporter == json"
   ]
 }

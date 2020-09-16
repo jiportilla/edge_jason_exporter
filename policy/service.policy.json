@@ -1,11 +1,9 @@
 {
   "properties": [
     {
-      "name": "purpose",
-      "value": "monitoring"
+      "name": "exporter",
+      "value": "json"
     }
   ],
-  "constraints": [
-    "openhorizon.allowPrivileged == true"
-  ]
+  "constraints": []
 }
