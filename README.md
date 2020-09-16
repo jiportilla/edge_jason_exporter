@@ -152,7 +152,7 @@ See [Developing an edge service for devices](https://www-03preprod.ibm.com/suppo
 
 ## <a id=using-JSON-exporter></a> 4. Using the JSON Exporter Service with Deployment Policy
 
-![Policy Example ](docs/edge-monitoring.png)
+![Policy Example ](docs/edge-monitoring-2.png)
 
 The Horizon Policy mechanism offers an alternative to using deployment patterns. Policies provide much finer control over the deployment placement of edge services. Policies also provide a greater separation of concerns, allowing edge nodes owners, service code developers, and business owners to each independently articulate their own policies. There are three main types of Horizon Policies:
 
@@ -171,13 +171,11 @@ Like the other two Policy types, Service Policy contains a set of `properties` a
 {
   "properties": [
   	 {
-      "name": "purpose",
-      "value": "monitoring"
+      "name": "exporter",
+      "value": "json"
     }
   ],
-  "constraints": [
-       "openhorizon.allowPrivileged == true"
-  ]
+  "constraints": []
 }
 ```
 
@@ -214,8 +212,8 @@ The output should look like:
 {
   "properties": [
     {
-      "name": "purpose",
-      "value": "monitoring"
+      "name": "exporter",
+      "value": "json"
     },
     {
       "name": "openhorizon.service.url",
@@ -238,9 +236,7 @@ The output should look like:
       "value": "amd64"
     }
   ],
-  "constraints": [
-    "openhorizon.allowPrivileged == true"
-  ]
+  "constraints": []
 }
 ```
 
@@ -382,7 +378,7 @@ hzn exchange deployment listpolicy policy-json.exporter_1.0.0
     },
   ],
   "constraints": [
-  	"purpose == monitoring"
+  	"exporter == json"
   ]
 }
 ```
